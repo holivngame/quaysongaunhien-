@@ -15,7 +15,7 @@ const predefinedWinners = [
 
 document.getElementById("spinBtn").addEventListener("click", spinWheel);
 
-// Vẽ bánh xe dựa trên danh sách tên
+// Vẽ bánh xe
 function drawWheel(names, rotation = 0) {
   const total = names.length;
   const angle = (2 * Math.PI) / total;
@@ -31,8 +31,8 @@ function drawWheel(names, rotation = 0) {
     ctx.arc(200, 200, 190, startAngle, endAngle);
     ctx.fillStyle = getColor(i);
     ctx.fill();
-    ctx.save();
 
+    ctx.save();
     ctx.translate(200, 200);
     ctx.rotate(startAngle + angle / 2);
     ctx.fillStyle = "#fff";
@@ -43,15 +43,14 @@ function drawWheel(names, rotation = 0) {
   }
 }
 
-// Màu ngẫu nhiên từng phần (cố định theo chỉ số)
 function getColor(index) {
   const colors = ["#FF6384", "#36A2EB", "#FFCE56", "#66ff66", "#9966ff", "#ff9933", "#ff66b3", "#4dc9f6"];
   return colors[index % colors.length];
 }
 
-// Hàm quay bánh xe
 function spinWheel() {
   if (spinning) return;
+
   const input = document.getElementById("namesInput").value.trim();
   names = input.split("\n").map(n => n.trim()).filter(n => n && !winners.includes(n));
 
@@ -62,21 +61,20 @@ function spinWheel() {
 
   drawWheel(names, currentRotation);
 
-  let winner = predefinedWinners[spinCount] || names[Math.floor(Math.random() * names.length)];
-  let winnerIndex = names.indexOf(winner);
-  if (winnerIndex === -1) {
-    alert("Người chỉ định không có trong danh sách!");
-    return;
+  let winner = predefinedWinners[spinCount];
+  if (!winner || !names.includes(winner)) {
+    // 👇 Nếu không có tên chỉ định, hoặc tên chỉ định không hợp lệ → chọn ngẫu nhiên
+    winner = names[Math.floor(Math.random() * names.length)];
   }
 
+  const winnerIndex = names.indexOf(winner);
   const segmentAngle = 360 / names.length;
-  const randomOffset = segmentAngle / 2;
-  const targetAngle = 360 - (winnerIndex * segmentAngle + randomOffset);
+  const offset = segmentAngle / 2;
+  const targetAngle = 360 - (winnerIndex * segmentAngle + offset);
+  const finalRotation = 360 * 5 + targetAngle;
 
-  let finalRotation = 360 * 5 + targetAngle;
   let duration = 5000;
   let start = null;
-
   spinning = true;
 
   function animate(timestamp) {
@@ -101,7 +99,6 @@ function spinWheel() {
   requestAnimationFrame(animate);
 }
 
-// easing ra chậm
 function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);
 }
