@@ -7,7 +7,7 @@ let currentRotation = 0;
 let spinning = false;
 
 const predefinedWinners = [
-  "Sơn Đinh",
+  "Đào Hoàng Nhật Mai",
   "Tuấn Trần"
 ];
 
