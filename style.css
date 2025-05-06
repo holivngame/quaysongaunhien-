@@ -1,7 +1,7 @@
 /* Nền trang và hiệu ứng pháo hoa */
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: url('https://example.com/coin-background.jpg') no-repeat center center fixed;
+  background: url('https://cdn.pixabay.com/photo/2016/11/29/03/50/coin-1867614_960_720.jpg') no-repeat center center fixed;
   background-size: cover;
   color: #fff;
   text-align: center;
@@ -15,7 +15,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('https://example.com/fireworks.gif') center center no-repeat;
+  background: url('https://cdn.pixabay.com/photo/2017/11/29/20/48/fireworks-2990672_960_720.jpg') center center no-repeat;
   z-index: -1;
   opacity: 0.5;
 }
