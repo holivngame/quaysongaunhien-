@@ -58,15 +58,6 @@ function spinWheel() {
 
   drawWheel(names, currentRotation);
 
-  let winner = predefinedWinners[spinCount];
-  if (!winner || !names.includes(winner)) {
-    winner = names[Math.floor(Math.random() * names.length)];
-  }
-
-  const winnerIndex = names.indexOf(winner);
-  const segmentAngle = 360 / names.length;
-  const offset = segmentAngle / 2;
-  const targetAngle = 360 - (winnerIndex * segmentAngle + offset);
-  const finalRotation = 360
+ 
 ::contentReference[oaicite:0]{index=0}
  
