@@ -6,16 +6,13 @@ let spinCount = 0;
 let currentRotation = 0;
 let spinning = false;
 
-// 👇 Danh sách người trúng theo lượt (ẩn)
 const predefinedWinners = [
-  "Nguyễn Văn A",  // lượt 1
-  "Trần Thị B",    // lượt 2
-  // thêm nếu cần
+  "Nguyễn Văn A",
+  "Trần Thị B",
 ];
 
 document.getElementById("spinBtn").addEventListener("click", spinWheel);
 
-// Vẽ bánh xe
 function drawWheel(names, rotation = 0) {
   const total = names.length;
   const angle = (2 * Math.PI) / total;
@@ -63,7 +60,6 @@ function spinWheel() {
 
   let winner = predefinedWinners[spinCount];
   if (!winner || !names.includes(winner)) {
-    // 👇 Nếu không có tên chỉ định, hoặc tên chỉ định không hợp lệ → chọn ngẫu nhiên
     winner = names[Math.floor(Math.random() * names.length)];
   }
 
@@ -71,34 +67,6 @@ function spinWheel() {
   const segmentAngle = 360 / names.length;
   const offset = segmentAngle / 2;
   const targetAngle = 360 - (winnerIndex * segmentAngle + offset);
-  const finalRotation = 360 * 5 + targetAngle;
-
-  let duration = 5000;
-  let start = null;
-  spinning = true;
-
-  function animate(timestamp) {
-    if (!start) start = timestamp;
-    let progress = timestamp - start;
-    let ease = easeOutCubic(progress / duration);
-    let angle = currentRotation + (finalRotation - currentRotation) * ease;
-    drawWheel(names, angle * Math.PI / 180);
-
-    if (progress < duration) {
-      requestAnimationFrame(animate);
-    } else {
-      currentRotation = finalRotation % 360;
-      winners.push(winner);
-      spinCount++;
-      spinning = false;
-      alert("🎉 Xin chúc mừng người chiến thắng: " + winner + "!");
-      document.getElementById("title").textContent = `🎊 Người chiến thắng: ${winner}`;
-    }
-  }
-
-  requestAnimationFrame(animate);
-}
-
-function easeOutCubic(t) {
-  return 1 - Math.pow(1 - t, 3);
-}
+  const finalRotation = 360
+::contentReference[oaicite:0]{index=0}
+ 
