@@ -23,14 +23,15 @@ body {
 #pointer {
   width: 0;
   height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-bottom: 40px solid red;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  border-left: 40px solid red;
   position: absolute;
-  top: -40px;
-  left: 180px;
+  top: 180px;  /* căn giữa theo chiều cao vòng quay */
+  left: 400px; /* đặt ngay bên phải vòng quay 400px */
   z-index: 10;
 }
+
 
 #wheel {
   border: 10px solid #fff;
