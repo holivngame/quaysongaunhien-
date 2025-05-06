@@ -1,95 +1,107 @@
-let rotation = 0;
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+let names = [];
 let winners = [];
 let spinCount = 0;
-let names = [];
-let canvas = document.getElementById("wheel");
-let ctx = canvas.getContext("2d");
-let currentAngle = 0;
+let currentRotation = 0;
+let spinning = false;
 
-// Người trúng thưởng theo lượt quay (ẩn)
+// 👇 Danh sách người trúng theo lượt (ẩn)
 const predefinedWinners = [
-  "Nguyễn Văn A",  // Lượt 1
-  "Trần Thị B",    // Lượt 2
-  // Thêm tại đây nếu muốn
+  "Nguyễn Văn A",  // lượt 1
+  "Trần Thị B",    // lượt 2
+  // thêm nếu cần
 ];
 
-// Hàm vẽ bánh xe với tên
-function drawWheel(names) {
-  let total = names.length;
-  let arc = 2 * Math.PI / total;
+document.getElementById("spinBtn").addEventListener("click", spinWheel);
+
+// Vẽ bánh xe dựa trên danh sách tên
+function drawWheel(names, rotation = 0) {
+  const total = names.length;
+  const angle = (2 * Math.PI) / total;
 
   ctx.clearRect(0, 0, 400, 400);
 
   for (let i = 0; i < total; i++) {
-    let angle = i * arc + currentAngle;
-    ctx.beginPath();
-    ctx.fillStyle = getRandomColor();
-    ctx.moveTo(200, 200);
-    ctx.arc(200, 200, 190, angle, angle + arc);
-    ctx.fill();
+    const startAngle = i * angle + rotation;
+    const endAngle = startAngle + angle;
 
-    // Tên
+    ctx.beginPath();
+    ctx.moveTo(200, 200);
+    ctx.arc(200, 200, 190, startAngle, endAngle);
+    ctx.fillStyle = getColor(i);
+    ctx.fill();
     ctx.save();
+
     ctx.translate(200, 200);
-    ctx.rotate(angle + arc / 2);
-    ctx.textAlign = "right";
-    ctx.fillStyle = "white";
+    ctx.rotate(startAngle + angle / 2);
+    ctx.fillStyle = "#fff";
     ctx.font = "bold 14px sans-serif";
+    ctx.textAlign = "right";
     ctx.fillText(names[i], 180, 0);
     ctx.restore();
   }
 }
 
-// Màu ngẫu nhiên cho từng phần
-function getRandomColor() {
-  let letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
-  return color;
+// Màu ngẫu nhiên từng phần (cố định theo chỉ số)
+function getColor(index) {
+  const colors = ["#FF6384", "#36A2EB", "#FFCE56", "#66ff66", "#9966ff", "#ff9933", "#ff66b3", "#4dc9f6"];
+  return colors[index % colors.length];
 }
 
+// Hàm quay bánh xe
 function spinWheel() {
-  const textarea = document.getElementById("namesInput");
-  names = textarea.value.split("\n").map(n => n.trim()).filter(n => n && !winners.includes(n));
+  if (spinning) return;
+  const input = document.getElementById("namesInput").value.trim();
+  names = input.split("\n").map(n => n.trim()).filter(n => n && !winners.includes(n));
 
   if (names.length === 0) {
-    alert("Vui lòng nhập danh sách tên hợp lệ!");
+    alert("Vui lòng nhập danh sách hợp lệ!");
     return;
   }
 
-  drawWheel(names); // Cập nhật bánh xe theo tên hiện tại
+  drawWheel(names, currentRotation);
 
   let winner = predefinedWinners[spinCount] || names[Math.floor(Math.random() * names.length)];
-  let index = names.indexOf(winner);
-
-  if (index === -1) {
-    alert("Người được chỉ định không có trong danh sách!");
+  let winnerIndex = names.indexOf(winner);
+  if (winnerIndex === -1) {
+    alert("Người chỉ định không có trong danh sách!");
     return;
   }
 
-  let arc = 360 / names.length;
-  let stopAngle = (360 * 5) + (360 - index * arc - arc / 2);
-  rotation = stopAngle;
+  const segmentAngle = 360 / names.length;
+  const randomOffset = segmentAngle / 2;
+  const targetAngle = 360 - (winnerIndex * segmentAngle + randomOffset);
 
+  let finalRotation = 360 * 5 + targetAngle;
   let duration = 5000;
   let start = null;
+
+  spinning = true;
 
   function animate(timestamp) {
     if (!start) start = timestamp;
     let progress = timestamp - start;
-    let easeOut = 1 - Math.pow(1 - progress / duration, 3);
-    currentAngle = (rotation * easeOut) * Math.PI / 180;
-    drawWheel(names);
+    let ease = easeOutCubic(progress / duration);
+    let angle = currentRotation + (finalRotation - currentRotation) * ease;
+    drawWheel(names, angle * Math.PI / 180);
 
     if (progress < duration) {
       requestAnimationFrame(animate);
     } else {
+      currentRotation = finalRotation % 360;
       winners.push(winner);
       spinCount++;
+      spinning = false;
       alert("🎉 Xin chúc mừng người chiến thắng: " + winner + "!");
       document.getElementById("title").textContent = `🎊 Người chiến thắng: ${winner}`;
     }
   }
 
   requestAnimationFrame(animate);
+}
+
+// easing ra chậm
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
 }
