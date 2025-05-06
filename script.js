@@ -8,7 +8,7 @@ let spinning = false;
 
 const predefinedWinners = [
   "Đào Hoàng Nhật Mai",
-  "Tuấn Trần"
+  "Thiện Trần"
 ];
 
 document.getElementById("spinBtn").addEventListener("click", spinWheel);
